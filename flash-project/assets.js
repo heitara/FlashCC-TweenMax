@@ -1,3 +1,27 @@
+
+
+
+var canvas, stage, exportRoot, ani;
+
+function init() {
+	createjs.MotionGuidePlugin.install();
+
+	canvas = document.getElementById("canvas");
+	console.log("hi");
+	ani = new lib.assets();
+	ani.gotoAndStop(0);
+
+	stage = new createjs.Stage(canvas);
+	stage.addChild(ani);
+	stage.update();
+
+	createjs.Ticker.setFPS(24);
+	createjs.Ticker.addEventListener("tick", stage);
+
+	// lets start
+	tweenMovieClip( 0, 115, ani, null ).yoyo(true).repeat(-1);
+}
+
 (function (lib, img, cjs, ss) {
 
 var p; // shortcut to reference prototypes
@@ -190,3 +214,5 @@ p.nominalBounds = new cjs.Rectangle(502.5,385.5,95.1,29);
 
 })(lib = lib||{}, images = images||{}, createjs = createjs||{}, ss = ss||{});
 var lib, images, createjs, ss;
+
+init();

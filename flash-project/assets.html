@@ -10,36 +10,11 @@
 <script src="libs/tweenjs-0.6.1.combined.js"></script>
 <script src="libs/movieclip-0.8.1.combined.js"></script>
 <script src="libs/preloadjs-0.6.1.combined.js"></script>
+	<!--<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.10.2/TweenMax.min.js"></script>-->
 <script src="assets.js"></script>
 
-<script>
-var canvas, stage, exportRoot;
+<script src="main.js"></script>
 
-function init() {
-	canvas = document.getElementById("canvas");
-	images = images||{};
-
-	var loader = new createjs.LoadQueue(false);
-	loader.addEventListener("fileload", handleFileLoad);
-	loader.addEventListener("complete", handleComplete);
-	loader.loadManifest(lib.properties.manifest);
-}
-
-function handleFileLoad(evt) {
-	if (evt.item.type == "image") { images[evt.item.id] = evt.result; }
-}
-
-function handleComplete(evt) {
-	exportRoot = new lib.assets();
-
-	stage = new createjs.Stage(canvas);
-	stage.addChild(exportRoot);
-	stage.update();
-
-	createjs.Ticker.setFPS(lib.properties.fps);
-	createjs.Ticker.addEventListener("tick", stage);
-}
-</script>
 </head>
 
 <body onload="init();" style="background-color:#D4D4D4">
