@@ -1,20 +1,20 @@
 /**
  * Created by Emil Atanasov
  */
+//
+//var tweenMovieClip = function(from,to,target,ease) {
+//    if (!ease) ease = Linear.easeNone;
+//    target.gotoAndStop(from);
+//    var obj = {frame:from};
+//    var dur = Math.abs( (to-from)/lib.properties.fps);
+//    return TweenMax.to(obj,dur,{frame:to,roundProps:'frame',
+//        ease:ease,onUpdate:function() {
+//            target.gotoAndStop(obj.frame);
+//        }});
+//
+//}
 
-var tweenMovieClip = function(from,to,target,ease) {
-    if (!ease) ease = Linear.easeNone;
-    target.gotoAndStop(from);
-    var obj = {frame:from};
-    var dur = Math.abs( (to-from)/lib.properties.fps);
-    return TweenMax.to(obj,dur,{frame:to,roundProps:'frame',
-        ease:ease,onUpdate:function() {
-            target.gotoAndStop(obj.frame);
-        }});
-
-}
-
-var TWEEN_MAX = true;
+var TWEEN_MAX = false;
 var canvas, stage, exportRoot;
 
 function init() {

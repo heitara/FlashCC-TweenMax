@@ -152,7 +152,7 @@ this.createjs = this.createjs||{};
 		 * @type Timeline
 		 * @default null
 		 */
-		this.timeline = new createjs.Timeline(null, labels, {paused:true, position:startPosition, useTicks:true});
+		this.timeline = new createjs.TimelineMaxJS(null, labels, {paused:true, position:startPosition, useTicks:true});
 	
 		/**
 		 * If true, the MovieClip's position will not advance when ticked.
@@ -535,6 +535,11 @@ this.createjs = this.createjs||{};
 	 * @protected
 	 **/
 	p._updateTimeline = function() {
+
+		//console.log("update timeline");
+		//return;
+
+
 		var tl = this.timeline;
 		var synched = this.mode != MovieClip.INDEPENDENT;
 		tl.loop = (this.loop==null) ? true : this.loop;
