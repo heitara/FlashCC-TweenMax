@@ -14,7 +14,7 @@ var tweenMovieClip = function(from,to,target,ease) {
 
 }
 
-
+var TWEEN_MAX = true;
 var canvas, stage, exportRoot;
 
 function init() {

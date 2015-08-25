@@ -1,27 +1,3 @@
-
-
-
-var canvas, stage, exportRoot, ani;
-
-function init() {
-	createjs.MotionGuidePlugin.install();
-
-	canvas = document.getElementById("canvas");
-	console.log("hi");
-	ani = new lib.assets();
-	ani.gotoAndStop(0);
-
-	stage = new createjs.Stage(canvas);
-	stage.addChild(ani);
-	stage.update();
-
-	createjs.Ticker.setFPS(24);
-	createjs.Ticker.addEventListener("tick", stage);
-
-	// lets start
-	tweenMovieClip( 0, 115, ani, null ).yoyo(true).repeat(-1);
-}
-
 (function (lib, img, cjs, ss) {
 
 var p; // shortcut to reference prototypes
@@ -62,7 +38,7 @@ p.nominalBounds = new cjs.Rectangle(0,0,515,157);
 
 // stage content:
 (lib.assets = function(mode,startPosition,loop) {
-	this.initialize(mode,startPosition,loop,{});
+	this.initialize(mode,startPosition,loop,{appear:0,oversize:40,"static":49,move:97,end:118});
 
 	// titles
 	this.instance = new lib.bigWinTitle();
