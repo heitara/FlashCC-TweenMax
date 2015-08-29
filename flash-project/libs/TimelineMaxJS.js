@@ -37,6 +37,8 @@ this.createjs = this.createjs||{};
     function TimelineMaxJS(tweens, labels, props) {
         this.EventDispatcher_constructor();
 
+        this.mc = null;
+
         // public properties:
         /**
          * Causes this timeline to continue playing when a global pause is active.
@@ -199,16 +201,21 @@ this.createjs = this.createjs||{};
         } else if (l == 0) { return null; }
 
         this.removeTween(tween);
-        this._tweens.push(tween);
+        //the tween is part of _tween object
+        //this._tweens.push(tween);
         //tween.setPaused(true);
-        tween._paused = false;
-        tween._useTicks = this._useTicks;
+        //tween._paused = false;
+        //tween._useTicks = this._useTicks;
 
-        if (tween.duration > this.duration) { this.duration = tween.duration; }
+        //if (tween.duration > this.duration) { this.duration = tween.duration; }
 
-        if (this._prevPos >= 0) { tween.setPosition(this._prevPos, createjs.Tween.NONE); }
+        //if (this._prevPos >= 0) { tween.setPosition(this._prevPos, createjs.Tween.NONE); }
 
         //timeline
+        if(this.mc) {
+            this.mc.addChildAt(tween._target,0);
+        }
+
         this._timelineMax.add(tween._timelineMax);
 
         return tween;
@@ -354,13 +361,6 @@ this.createjs = this.createjs||{};
         //timeline
         return this._timelineMax.seek(this._prevPosition).progress() === 1.0;
 
-        for (var i=0, l=this._tweens.length; i<l; i++) {
-            this._tweens[i].setPosition(t, actionsMode);
-            if (t != this._prevPos) { return false; } // an action changed this timeline's position.
-        }
-        if (end) { this.setPaused(true); }
-        this.dispatchEvent("change");
-        return end;
     };
 
     /**
@@ -369,7 +369,10 @@ this.createjs = this.createjs||{};
      * @param {Boolean} value Indicates whether the tween should be paused (`true`) or played (`false`).
      **/
     p.setPaused = function(value) {
+
         this._paused = !!value;
+        var playOrPause = this._paused ? "paused" : "playing";
+        console.log(playOrPause);
         if(this._paused) {
             //timeline
             this._timelineMax.pause();
@@ -386,11 +389,11 @@ this.createjs = this.createjs||{};
      * @method updateDuration
      **/
     p.updateDuration = function() {
-        this.duration = 0;
-        for (var i=0,l=this._tweens.length; i<l; i++) {
-            var tween = this._tweens[i];
-            if (tween.duration > this.duration) { this.duration = tween.duration; }
-        }
+        //this.duration = 0;
+        //for (var i=0,l=this._tweens.length; i<l; i++) {
+        //    var tween = this._tweens[i];
+        //    if (tween.duration > this.duration) { this.duration = tween.duration; }
+        //}
     };
 
     /**

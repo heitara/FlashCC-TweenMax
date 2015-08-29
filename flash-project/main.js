@@ -14,7 +14,7 @@
 //
 //}
 
-var TWEEN_MAX = false;
+var TWEEN_MAX = true;
 var canvas, stage, exportRoot;
 
 function init() {
@@ -45,6 +45,7 @@ function handleComplete(evt) {
     createjs.Ticker.addEventListener("tick", stage);
 
     if(TWEEN_MAX) {
-        tweenMovieClip(0, 115, exportRoot, null).yoyo(true).repeat(-1);
+        //tweenMovieClip(0, 115, exportRoot, null).yoyo(true).repeat(-1);
+        exportRoot.gotoAndPlay(80);
     }
 }

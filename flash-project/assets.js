@@ -18,6 +18,20 @@ lib.properties = {
 // symbols:
 
 
+	/***
+	 * How the timeline works with tweens.
+	 *
+	 * TweenJS internal structure and dependencies:
+	 *
+	 * 1. MovieClip class is the brdge between EaselJS and TweenJS
+	 * 2. It contains timeline object (which is similar to Tween objects)
+	 * 3. Each update of the timeline updates all tweens, which are part of the timeline.
+	 * 3.1. The update adds a child on the screen and all its attributes are updated by the Tween obj itself and
+	 * this way the animation is achieved. In short, the object knows its own properties at each frame
+	 * and the movie clip simply adds all visible object on the scene.
+	 *
+	 */
+
 
 (lib.bigWin = function() {
 	this.initialize(img.bigWin);
@@ -50,7 +64,7 @@ p.nominalBounds = new cjs.Rectangle(0,0,515,157);
 		regX: 257.5,
 		scaleX: 0.19,
 		scaleY: 0.19,
-		alpha: 0.003
+		alpha: 9.003
 	}, 0).wait(1).to({scaleX: 0.19, scaleY: 0.19, alpha: 0.007}, 0).wait(1).to({
 		scaleX: 0.2,
 		scaleY: 0.2,

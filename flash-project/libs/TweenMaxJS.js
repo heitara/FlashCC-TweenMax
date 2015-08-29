@@ -257,7 +257,7 @@ this.createjs = this.createjs||{};
             this._useTicks = props.useTicks;
             this.ignoreGlobalPause = props.ignoreGlobalPause;
             this.loop = props.loop;
-            props.onChange && this.addEventListener("change", props.onChange);
+
             if (props.override) { TweenMaxJS.removeTweens(target); }
         }
         if (props&&props.paused) { this._paused=true; }
@@ -375,12 +375,7 @@ this.createjs = this.createjs||{};
      * @static
      */
     TweenMaxJS.tick = function(delta, paused) {
-        var tweens = TweenMaxJS._tweens.slice(); // to avoid race conditions.
-        for (var i=tweens.length-1; i>=0; i--) {
-            var tween = tweens[i];
-            if ((paused && !tween.ignoreGlobalPause) || tween._paused) { continue; }
-            tween.tick(tween._useTicks?1:delta);
-        }
+        console.log("TweenMaxJS.tick: " + delta + " , " + paused);
     };
 
     /**
@@ -459,19 +454,20 @@ this.createjs = this.createjs||{};
      * @param {Array} properties An array of properties that the plugin will handle.
      */
     TweenMaxJS.installPlugin = function(plugin, properties) {
-        var priority = plugin.priority;
-        if (priority == null) { plugin.priority = priority = 0; }
-        for (var i=0,l=properties.length,p=TweenMaxJS._plugins;i<l;i++) {
-            var n = properties[i];
-            if (!p[n]) { p[n] = [plugin]; }
-            else {
-                var arr = p[n];
-                for (var j=0,jl=arr.length;j<jl;j++) {
-                    if (priority < arr[j].priority) { break; }
-                }
-                p[n].splice(j,0,plugin);
-            }
-        }
+        console.log("install plugin");
+        //var priority = plugin.priority;
+        //if (priority == null) { plugin.priority = priority = 0; }
+        //for (var i=0,l=properties.length,p=TweenMaxJS._plugins;i<l;i++) {
+        //    var n = properties[i];
+        //    if (!p[n]) { p[n] = [plugin]; }
+        //    else {
+        //        var arr = p[n];
+        //        for (var j=0,jl=arr.length;j<jl;j++) {
+        //            if (priority < arr[j].priority) { break; }
+        //        }
+        //        p[n].splice(j,0,plugin);
+        //    }
+        //}
     };
 
     /**
@@ -483,24 +479,25 @@ this.createjs = this.createjs||{};
      * @protected
      */
     TweenMaxJS._register = function(tween, value) {
-        var target = tween._target;
-        var tweens = TweenMaxJS._tweens;
-        if (value && !tween._registered) {
-            // TODO: this approach might fail if a dev is using sealed objects in ES5
-            if (target) { target.tweenjs_count = target.tweenjs_count ? target.tweenjs_count+1 : 1; }
-            tweens.push(tween);
-            if (!TweenMaxJS._inited && createjs.Ticker) { createjs.Ticker.addEventListener("tick", TweenMaxJS); TweenMaxJS._inited = true; }
-        } else if (!value && tween._registered) {
-            if (target) { target.tweenjs_count--; }
-            var i = tweens.length;
-            while (i--) {
-                if (tweens[i] == tween) {
-                    tweens.splice(i, 1);
-                    break;
-                }
-            }
-        }
-        tween._registered = value;
+        console.log("_register");
+        //var target = tween._target;
+        //var tweens = TweenMaxJS._tweens;
+        //if (value && !tween._registered) {
+        //    // TODO: this approach might fail if a dev is using sealed objects in ES5
+        //    if (target) { target.tweenjs_count = target.tweenjs_count ? target.tweenjs_count+1 : 1; }
+        //    tweens.push(tween);
+        //    if (!TweenMaxJS._inited && createjs.Ticker) { createjs.Ticker.addEventListener("tick", TweenMaxJS); TweenMaxJS._inited = true; }
+        //} else if (!value && tween._registered) {
+        //    if (target) { target.tweenjs_count--; }
+        //    var i = tweens.length;
+        //    while (i--) {
+        //        if (tweens[i] == tween) {
+        //            tweens.splice(i, 1);
+        //            break;
+        //        }
+        //    }
+        //}
+        //tween._registered = value;
     };
 
 
@@ -535,8 +532,9 @@ this.createjs = this.createjs||{};
         //timeline
         this._timelineMax.add(TweenMax.to(this.target, duration, o));
 
+        return this;
 
-        return this._addStep({d:duration, p0:o, e:this._linearEase, p1:o, v:passive});
+        //return this._addStep({d:duration, p0:o, e:this._linearEase, p1:o, v:passive});
     };
 
     /**
@@ -561,8 +559,9 @@ this.createjs = this.createjs||{};
             props.ease = ease;
         }
         //timeline
-        this._timelineMax.to(this.target, duration, props)
-        return this._addStep({d:duration||0, p0:this._cloneProps(this._curQueueProps), e:ease, p1:this._cloneProps(this._appendQueueProps(props))});
+        this._timelineMax.to(this.target, duration, props);
+        return this;
+        //return this._addStep({d:duration||0, p0:this._cloneProps(this._curQueueProps), e:ease, p1:this._cloneProps(this._appendQueueProps(props))});
     };
 
     /**
@@ -583,7 +582,8 @@ this.createjs = this.createjs||{};
     p.call = function(callback, params, scope) {
         //timeline
         this._timelineMax.call(callback, params, scope);
-        return this._addAction({f:callback, p:params ? params : [this], o:scope ? scope : this._target});
+        return this;
+        //return this._addAction({f:callback, p:params ? params : [this], o:scope ? scope : this._target});
     };
 
     // TODO: add clarification between this and a 0 duration .to:
@@ -602,8 +602,8 @@ this.createjs = this.createjs||{};
     p.set = function(props, target) {
         //timeline
         this._timelineMax.set(target ? target : this._target, props);
-
-        return this._addAction({f:this._set, o:this, p:[props, target ? target : this._target]});
+        return this;
+        //return this._addAction({f:this._set, o:this, p:[props, target ? target : this._target]});
     };
 
     /**
@@ -673,39 +673,7 @@ this.createjs = this.createjs||{};
         //timeline
        return this._timelineMax.seek(this._prevPosition).progress() === 1.0;
 
-        //TODO: check what are ACTIONS?
-        // handle tweens:
-        if (this._target) {
-            if (end) {
-                // addresses problems with an ending zero length step.
-                this._updateTargetProps(null,1);
-            } else if (this._steps.length > 0) {
-                // find our new tween index:
-                for (var i=0, l=this._steps.length; i<l; i++) {
-                    if (this._steps[i].t > t) { break; }
-                }
-                var step = this._steps[i-1];
-                this._updateTargetProps(step,(this._stepPosition = t-step.t)/step.d);
-            }
-        }
 
-        // run actions:
-        if (actionsMode != 0 && this._actions.length > 0) {
-            if (this._useTicks) {
-                // only run the actions we landed on.
-                this._runActions(t,t);
-            } else if (actionsMode == 1 && t<prevPos) {
-                if (prevPos != this.duration) { this._runActions(prevPos, this.duration); }
-                this._runActions(0, t, true);
-            } else {
-                this._runActions(prevPos, t);
-            }
-        }
-
-        if (end) { this.setPaused(true); }
-
-        this.dispatchEvent("change");
-        return end;
     };
 
     /**
@@ -716,6 +684,7 @@ this.createjs = this.createjs||{};
      * @param {Number} delta The time to advance in milliseconds (or ticks if `useTicks` is `true`).
      */
     p.tick = function(delta) {
+        console.log("tick");
         if (this._paused) { return; }
         this.setPosition(this._prevPosition+delta);
     };
@@ -763,117 +732,8 @@ this.createjs = this.createjs||{};
         throw("TweenMaxJS can not be cloned.")
     };
 
-// private methods:
-    /**
-     * @method _updateTargetProps
-     * @param {Object} step
-     * @param {Number} ratio
-     * @protected
-     */
-    p._updateTargetProps = function(step, ratio) {
-        var p0,p1,v,v0,v1,arr;
-        if (!step && ratio == 1) {
-            // GDS: when does this run? Just at the very end? Shouldn't.
-            this.passive = false;
-            p0 = p1 = this._curQueueProps;
-        } else {
-            this.passive = !!step.v;
-            if (this.passive) { return; } // don't update props.
-            // apply ease to ratio.
-            if (step.e) { ratio = step.e(ratio,0,1,1); }
-            p0 = step.p0;
-            p1 = step.p1;
-        }
 
-        for (var n in this._initQueueProps) {
-            if ((v0 = p0[n]) == null) { p0[n] = v0 = this._initQueueProps[n]; }
-            if ((v1 = p1[n]) == null) { p1[n] = v1 = v0; }
-            if (v0 == v1 || ratio == 0 || ratio == 1 || (typeof(v0) != "number")) {
-                // no interpolation - either at start, end, values don't change, or the value is non-numeric.
-                v = ratio == 1 ? v1 : v0;
-            } else {
-                v = v0+(v1-v0)*ratio;
-            }
 
-            var ignore = false;
-            if (arr = TweenMaxJS._plugins[n]) {
-                for (var i=0,l=arr.length;i<l;i++) {
-                    var v2 = arr[i].tween(this, n, v, p0, p1, ratio, !!step&&p0==p1, !step);
-                    if (v2 == TweenMaxJS.IGNORE) { ignore = true; }
-                    else { v = v2; }
-                }
-            }
-            if (!ignore) { this._target[n] = v; }
-        }
-
-    };
-
-    /**
-     * @method _runActions
-     * @param {Number} startPos
-     * @param {Number} endPos
-     * @param {Boolean} includeStart
-     * @protected
-     */
-    p._runActions = function(startPos, endPos, includeStart) {
-        var sPos = startPos;
-        var ePos = endPos;
-        var i = -1;
-        var j = this._actions.length;
-        var k = 1;
-        if (startPos > endPos) {
-            // running backwards, flip everything:
-            sPos = endPos;
-            ePos = startPos;
-            i = j;
-            j = k = -1;
-        }
-        while ((i+=k) != j) {
-            var action = this._actions[i];
-            var pos = action.t;
-            if (pos == ePos || (pos > sPos && pos < ePos) || (includeStart && pos == startPos) ) {
-                action.f.apply(action.o, action.p);
-            }
-        }
-    };
-
-    /**
-     * @method _appendQueueProps
-     * @param {Object} o
-     * @protected
-     */
-    p._appendQueueProps = function(o) {
-        var arr,oldValue,i, l, injectProps;
-        for (var n in o) {
-            if (this._initQueueProps[n] === undefined) {
-                oldValue = this._target[n];
-
-                // init plugins:
-                if (arr = TweenMaxJS._plugins[n]) {
-                    for (i=0,l=arr.length;i<l;i++) {
-                        oldValue = arr[i].init(this, n, oldValue);
-                    }
-                }
-                this._initQueueProps[n] = this._curQueueProps[n] = (oldValue===undefined) ? null : oldValue;
-            } else {
-                oldValue = this._curQueueProps[n];
-            }
-        }
-
-        for (var n in o) {
-            oldValue = this._curQueueProps[n];
-            if (arr = TweenMaxJS._plugins[n]) {
-                injectProps = injectProps||{};
-                for (i=0, l=arr.length;i<l;i++) {
-                    // TODO: remove the check for .step in the next version. It's here for backwards compatibility.
-                    if (arr[i].step) { arr[i].step(this, n, oldValue, o[n], injectProps); }
-                }
-            }
-            this._curQueueProps[n] = o[n];
-        }
-        if (injectProps) { this._appendQueueProps(injectProps); }
-        return this._curQueueProps;
-    };
 
     /**
      * @method _cloneProps
@@ -886,43 +746,6 @@ this.createjs = this.createjs||{};
             o[n] = props[n];
         }
         return o;
-    };
-
-    /**
-     * @method _addStep
-     * @param {Object} o
-     * @protected
-     */
-    p._addStep = function(o) {
-        if (o.d > 0) {
-            this._steps.push(o);
-            o.t = this.duration;
-            this.duration += o.d;
-        }
-        return this;
-    };
-
-    /**
-     * @method _addAction
-     * @param {Object} o
-     * @protected
-     */
-    p._addAction = function(o) {
-        o.t = this.duration;
-        this._actions.push(o);
-        return this;
-    };
-
-    /**
-     * @method _set
-     * @param {Object} props
-     * @param {Object} o
-     * @protected
-     */
-    p._set = function(props, o) {
-        for (var n in props) {
-            o[n] = props[n];
-        }
     };
 
     createjs.TweenMaxJS = createjs.promote(TweenMaxJS, "EventDispatcher");

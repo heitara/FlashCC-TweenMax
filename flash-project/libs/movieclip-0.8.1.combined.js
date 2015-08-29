@@ -250,6 +250,8 @@ this.createjs = this.createjs||{};
 		 * @private
 		 */
 		this._managed = {};
+
+		this.timeline.mc = this;
 	}
 	var p = createjs.extend(MovieClip, createjs.Container);
 
@@ -537,52 +539,31 @@ this.createjs = this.createjs||{};
 	p._updateTimeline = function() {
 
 		//console.log("update timeline");
-		//return;
 
 
 		var tl = this.timeline;
 		var synched = this.mode != MovieClip.INDEPENDENT;
 		tl.loop = (this.loop==null) ? true : this.loop;
-		
+
 		var pos = synched ? this.startPosition + (this.mode==MovieClip.SINGLE_FRAME?0:this._synchOffset) : (this._prevPos < 0 ? 0 : this._prevPosition);
 		var mode = synched || !this.actionsEnabled ? createjs.Tween.NONE : null;
-		
+
 		// pre-assign currentFrame so it is available to frame scripts:
 		this.currentFrame = tl._calcPosition(pos);
-		
 		// update timeline position, ignoring actions if this is a graphic.
 		tl.setPosition(pos, mode);
+
 
 		this._prevPosition = tl._prevPosition;
 		if (this._prevPos == tl._prevPos) { return; }
 		this.currentFrame = this._prevPos = tl._prevPos;
 
 		for (var n in this._managed) { this._managed[n] = 1; }
+		//console.log("frame: " + this.currentFrame);
+		//console.log("_prevPosition: " + this._prevPosition);
+		console.log("pos: " + pos);
+		return;
 
-		var tweens = tl._tweens;
-		for (var i=0, l=tweens.length; i<l; i++) {
-			var tween = tweens[i];
-			var target = tween._target;
-			if (target == this || tween.passive) { continue; } // TODO: this assumes actions tween has this as the target. Valid?
-			var offset = tween._stepPosition;
-
-			if (target instanceof createjs.DisplayObject) {
-				// motion tween.
-				this._addManagedChild(target, offset);
-			} else {
-				// state tween.
-				this._setState(target.state, offset);
-			}
-		}
-
-		var kids = this.children;
-		for (i=kids.length-1; i>=0; i--) {
-			var id = kids[i].id;
-			if (this._managed[id] == 1) {
-				this.removeChildAt(i);
-				delete(this._managed[id]);
-			}
-		}
 	};
 
 	/**
@@ -612,6 +593,7 @@ this.createjs = this.createjs||{};
 	p._addManagedChild = function(child, offset) {
 		if (child._off) { return; }
 		this.addChildAt(child,0);
+		return;
 
 		if (child instanceof MovieClip) {
 			child._synchOffset = offset;
